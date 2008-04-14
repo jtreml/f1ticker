@@ -1,0 +1,95 @@
+<html>
+<head>
+	<style type="text/css">
+		body
+		{
+			margin: 0;
+			width: 930px;
+			height: 400px;
+			font-family: verdana;
+			font-weight: bold;
+			font-size: 10px;
+		}
+	</style>
+
+	<script type="text/jscript" language="jscript">
+		var tickerId = System.Gadget.Settings.readString("tickerId");
+		var autoRefresh = System.Gadget.Settings.readString("autoRefresh");
+		var singleRefresh = System.Gadget.Settings.readString("singleRefresh");
+		
+		function updateHeader()
+		{
+			document.getElementById("ifrHeader").src = "http://sport.rtl.de/formel1/ticker/hl1_" + tickerId + ".html?" + (new Date().getTime());
+		}
+		
+		function updateRanking()
+		{
+			document.getElementById("ifrRanking").src = "http://sport.rtl.de/formel1/ticker/i2_" + tickerId + ".html?" + (new Date().getTime());
+		}
+		
+		function updateNews()
+		{
+			document.getElementById("ifrNews").src = "http://sport.rtl.de/formel1/ticker/t_" + tickerId + ".html?" + (new Date().getTime());
+		}
+		
+		function updateAll()
+		{
+			updateHeader();
+			updateRanking();
+			updateNews();
+		}
+		
+		function updateTimer()
+		{
+			tickerId = System.Gadget.Settings.readString("tickerId");
+			autoRefresh = System.Gadget.Settings.readString("autoRefresh");
+			if(autoRefresh == 0)
+				return;
+				
+			updateAll();
+		}
+		
+		function singleRefreshTimer()
+		{
+			tickerId = System.Gadget.Settings.readString("tickerId");
+			singleRefresh = System.Gadget.Settings.readString("singleRefresh");
+			if(singleRefresh == 0)
+				return;
+			
+			singleRefresh = 0;
+			System.Gadget.Settings.write("singleRefresh", singleRefresh);
+			
+			updateAll();
+		}
+		
+	</script>
+
+</head>
+<body>
+	<table>
+		<tr>
+			<td colspan="2">
+				<iframe id="ifrHeader" security="restricted" style="border: 0px solid black; height: 55px;
+					width: 921px;" frameborder="0"></iframe>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<iframe id="ifrRanking" security="restricted" style="border: 0px solid black; height: 335px;
+					width: 467px;" frameborder="0"></iframe>
+			</td>
+			<td>
+				<iframe id="ifrNews" security="restricted" style="border: 0px solid black; height: 335px;
+					width: 447px;" frameborder="0"></iframe>
+			</td>
+		</tr>
+	</table>
+
+	<script type="text/jscript" language="jscript">
+		updateAll();
+		intervalRefresh = window.setInterval("updateTimer()", 5000);
+		intervalSingleRefresh = window.setInterval("singleRefreshTimer()", 1000);
+	</script>
+
+</body>
+</html>

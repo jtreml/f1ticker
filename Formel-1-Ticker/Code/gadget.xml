@@ -1,0 +1,20 @@
+<gadget>
+	<name>Formel-1-Ticker</name>
+	<version>0.1.0.2</version>
+	<author name="Jürgen Treml">
+		<info url="http://www.juergentreml.de/programming/formula-1-windows-vista-sidebar-gadget" text="www.juergentreml.de" />
+		<logo src="logo.png" />
+	</author>
+	<copyright>&#169; 2008</copyright>
+	<description>Das Gadget zeigt den RTL Sport Formel-1 Live Ticker in der Windows Vista Sidebar an.</description>
+	<hosts>
+		<host name="sidebar">
+			<base type="HTML" apiVersion="1.0.0" src="index.html" />
+			<permissions>Full</permissions>
+			<platform minPlatformVersion="1.0" />
+		</host>
+	</hosts>
+	<icons>
+		<icon height="84" width="108" src="icon.png"/>
+	</icons>
+</gadget>
