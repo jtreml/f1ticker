@@ -1,0 +1,191 @@
+<html>
+<head>
+	<style type="text/css">
+		body
+		{
+			margin: 0;
+			width: 200px;
+			height: 300px;
+			font-weight: bold;
+			font-size: 12px;
+		}
+		table
+		{
+			font-size: 12px;
+		}
+	</style>
+
+	<script type="text/jscript" language="jscript">
+		System.Gadget.onSettingsClosing = SettingsClosing;
+		
+		function init()
+		{
+			document.getElementById("HeightDocked").value = System.Gadget.Settings.readString("HeightDocked");
+			document.getElementById("WidthDocked").value = System.Gadget.Settings.readString("WidthDocked");
+			document.getElementById("HeightUndocked").value = System.Gadget.Settings.readString("HeightUndocked");
+			document.getElementById("WidthUndocked").value = System.Gadget.Settings.readString("WidthUndocked");
+			document.getElementById("TextUndocked").value = System.Gadget.Settings.readString("TextUndocked");
+			document.getElementById("TextDocked").value = System.Gadget.Settings.readString("TextDocked");
+		}
+		
+		function SettingsClosing(event)
+		{
+			// Save the settings if the user clicked OK.
+			if (event.closeAction == event.Action.commit)
+			{
+				var txtError = "";
+				var bError = 0;
+				
+				var heightDocked = document.getElementById("HeightDocked").value;
+				
+				if(!IsNumeric(heightDocked) || heightDocked < 100 || heightDocked > 600)
+					txtError += "Docked height must be between 100 and 600!<br />";
+				
+				var widthDocked = document.getElementById("WidthDocked").value;
+				if(!IsNumeric(widthDocked) || widthDocked < 130 || widthDocked > 300)
+					txtError += "Docked width must be between 130 and 300!<br />";
+				
+				var heightUndocked = document.getElementById("HeightUndocked").value;
+				if(!IsNumeric(heightUndocked) || heightUndocked < 100 || heightUndocked > 1000)
+					txtError += "Undocked height must be between 100 and 1000!<br />";
+
+				var widthUndocked = document.getElementById("WidthUndocked").value;
+				if(!IsNumeric(widthUndocked) || widthUndocked < 130 || widthUndocked > 1000)
+					txtError += "Undocked width must be between 130 and 1000!<br />";
+					
+				var textUndocked = document.getElementById("TextUndocked").value;
+				if(!IsNumeric(textUndocked) || textUndocked < 6 || textUndocked > 20)
+					txtError += "Undocked text must be between 6 and 20!<br />";
+					
+				var textDocked = document.getElementById("TextDocked").value;
+				if(!IsNumeric(textDocked) || textDocked < 6 || textDocked > 14)
+					txtError += "Docked text must be between 6 and 14!<br />";
+					
+				if(txtError == "") {
+					System.Gadget.Settings.write("HeightDocked", heightDocked);
+					System.Gadget.Settings.write("WidthDocked", widthDocked);
+					System.Gadget.Settings.write("HeightUndocked", heightUndocked);
+					System.Gadget.Settings.write("WidthUndocked", widthUndocked);
+					System.Gadget.Settings.write("TextDocked", textDocked);
+					System.Gadget.Settings.write("TextUndocked", textUndocked);
+				}
+				else {
+					document.getElementById("error").innerHTML = txtError;
+					event.cancel = true;
+					return;
+				}
+			}
+			// Allow the Settings dialog to close.
+			event.cancel = false;
+		}
+		
+		function IsNumeric(sText)
+		{
+			var ValidChars = "0123456789";
+			var IsNumber=true;
+			var Char;
+
+			for (i = 0; i < sText.length && IsNumber == true; i++) 
+			{ 
+				Char = sText.charAt(i); 
+				if (ValidChars.indexOf(Char) == -1) {
+					IsNumber = false;
+				}
+			}
+			
+			return IsNumber;   
+		}
+	</script>
+
+</head>
+<body oninit="">
+	<div style="text-decoration: underline; margin-bottom: 8px;">
+		Size (Docked)
+	</div>
+	<div>
+		<table width="100%">
+			<tr>
+				<td>
+					<label>
+						Height:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="HeightDocked" />
+					px
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Width:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="WidthDocked" value="130" />
+					px
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Text Size:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="TextDocked" />
+					px
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div style="text-decoration: underline; margin-bottom: 10px; margin-top: 15px;">
+		Size (Undocked)
+	</div>
+	<div>
+		<table width="100%">
+			<tr>
+				<td>
+					<label>
+						Height:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="HeightUndocked" />
+					px
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Width:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="WidthUndocked" />
+					px
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Text Size:
+					</label>
+				</td>
+				<td>
+					<input style="width: 80px;" id="TextUndocked" />
+					px
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div style="font-size: 10px; margin-bottom: 10px; margin-top: 15px; color: Red;"
+		id="error">
+	</div>
+
+	<script type="text/jscript" language="jscript">
+		init();
+	</script>
+
+</body>
+</html>
