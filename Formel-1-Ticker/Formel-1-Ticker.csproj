@@ -61,6 +61,7 @@
     <Content Include="Code\flyout.html" />
     <Content Include="Code\gadget.xml" />
     <Content Include="Code\gfx\banner.jpg" />
+    <Content Include="Code\gfx\banner_ex.jpg" />
     <Content Include="Code\gfx\current_session.png" />
     <Content Include="Code\gfx\error.png" />
     <Content Include="Code\gfx\live_stream.png" />
@@ -72,5 +73,6 @@
     <Content Include="Code\icon.png" />
     <Content Include="Code\index.html" />
     <Content Include="Code\logo.png" />
+    <Content Include="Code\settings.html" />
   </ItemGroup>
 </Project>
