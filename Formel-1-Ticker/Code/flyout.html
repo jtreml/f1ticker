@@ -3,12 +3,85 @@
 	<style type="text/css">
 		body
 		{
-			margin: 0;
-			width: 930px;
-			height: 400px;
+			margin: 0px 0px 0px 0px;
+			padding: 0px 0px 0px 0px;
+			width: 922px;
+			height: 651;
 			font-family: verdana;
 			font-weight: bold;
 			font-size: 10px;
+		}
+		a
+		{
+			color: Black;
+			text-decoration: none;
+		}
+		a:hover
+		{
+			text-decoration: underline;
+		}
+		img
+		{
+			border: 0px solid Black;
+		}
+		table, tr, td
+		{
+			margin: 0px 0px 0px 0px;
+			padding: 0px 0px 0px 0px;
+		}
+		table.Menu
+		{
+			font: bold 10px verdana,geneva,arial,helvetica,sans-serif;
+			margin-top: 23px;
+			margin-bottom: 8px;
+		}
+		td.MenuSession
+		{
+			background-color: #9A0000;
+			border-right: 2px solid White;
+			padding: 5px 10px 7px 10px;
+			color: White;
+		}
+		td.MenuTop
+		{
+			background-color: #d4d0c7;
+			border-bottom: 1px solid White;
+			border-left: 0px solid White;
+			border-right: 2px solid White;
+			padding: 5px 5px 5px 5px;
+		}
+		td.MenuBottom
+		{
+			background-color: #d4d0c7;
+			border-top: 1px solid White;
+			border-left: 0px solid White;
+			border-right: 2px solid White;
+			padding: 5px 5px 5px 5px;
+		}
+		td.MenuTopL
+		{
+			background-color: #d4d0c7;
+			border-bottom: 1px solid White;
+			border-left: 2px solid White;
+			border-right: 0px solid White;
+			padding: 5px 5px 5px 5px;
+		}
+		td.MenuBottomL
+		{
+			background-color: #d4d0c7;
+			border-top: 1px solid White;
+			border-left: 2px solid White;
+			border-right: 0px solid White;
+			padding: 5px 5px 5px 5px;
+		}
+		td.MenuImage
+		{
+			border: 1px solid #9A0000;
+			margin-left: 2px;
+			margin-right: 2px;
+			text-align: center;
+			vertical-align: middle;
+			padding: 3px 2px 0px 2px;
 		}
 	</style>
 
@@ -17,15 +90,17 @@
 		var autoRefresh = System.Gadget.Settings.readString("autoRefresh");
 		var singleRefresh = System.Gadget.Settings.readString("singleRefresh");
 		
+		var rankingView = 2;
+		
 		System.Gadget.Flyout.onShow = showFlyout;
 		
 		function showFlyout()
 		{
 			if (System.Gadget.docked) {
-				document.getElementById("body").style.border = "1px solid Gray";
+				document.getElementById("body").style.border = "1px solid #d4d0c7";
 			}
 			else {
-				document.getElementById("body").style.border = "2px solid Gray";
+				document.getElementById("body").style.border = "2px solid #d4d0c7";
 			}
 		}
 		
@@ -36,7 +111,14 @@
 		
 		function updateRanking()
 		{
-			document.getElementById("ifrRanking").src = "http://sport.rtl.de/formel1/ticker/i2_" + tickerId + ".html?" + (new Date().getTime());
+			var colorNormal = "#d4d0c7";
+			var colorSel = "#fe3233";
+			
+			document.getElementById("cellKlassement").style.backgroundColor = (rankingView == 2 ? colorSel : colorNormal);
+			document.getElementById("cellWMStand").style.backgroundColor = (rankingView == 4 ? colorSel : colorNormal);
+			document.getElementById("cellStartaufstellung").style.backgroundColor = (rankingView == 3 ? colorSel : colorNormal);
+
+			document.getElementById("ifrRanking").src = "http://sport.rtl.de/formel1/ticker/i" + rankingView + "_" + tickerId + ".html?" + (new Date().getTime());
 		}
 		
 		function updateNews()
@@ -63,36 +145,140 @@
 		
 		function singleRefreshTimer()
 		{
-			tickerId = System.Gadget.Settings.readString("tickerId");
-			singleRefresh = System.Gadget.Settings.readString("singleRefresh");
+			singleRefresh = System.Gadget.Settings.readString("singleRefreshFlyout");
 			if(singleRefresh == 0)
 				return;
 			
 			singleRefresh = 0;
-			System.Gadget.Settings.write("singleRefresh", singleRefresh);
+			System.Gadget.Settings.write("singleRefreshFlyout", singleRefresh);
+			
+			if(System.Gadget.Settings.readString("tickerId") != tickerId)
+				rankingView = 2;	
+			
+			tickerId = System.Gadget.Settings.readString("tickerId");
+						
+			var options = document.getElementById("selSession").options;
+			for(var i = 0; i < options.length; i++) {
+				if(options[i].value == tickerId) {
+					options[i].selected = true;
+					break;
+				}
+			}
 			
 			updateAll();
 		}
 		
+		function sessionChanged()
+		{
+			var sel = document.getElementById("selSession");
+			tickerId = sel.options[sel.selectedIndex].value;
+			System.Gadget.Settings.write("tickerId", tickerId);
+			
+			rankingView = 2;
+			
+			System.Gadget.Settings.write("singleRefreshGadget", 1);
+			updateAll();
+		}
+		
+		function refreshTicker()
+		{
+			System.Gadget.Settings.write("singleRefreshGadget", 1);
+			updateAll();
+		}
+		
+		function changeRankingView(view)
+		{
+			rankingView = view;			
+			updateRanking();
+		}
+				
 	</script>
 
 </head>
 <body style="border: 2px solid Gray;" id="body">
-	<table>
+	<!-- This empty link exists to prevent the following select box getting the focus and having a selection border -->
+	<a href=""></a>
+	<table width="100%" cellspacing="0">
+		<tr>
+			<td colspan="2">
+				<img src="http://sport.rtl.de/formel1/ticker/img_new/header_xxl.jpg" alt="Banner"
+					style="margin-top: 14px;" />
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<table width="100%" cellspacing="0" class="Menu">
+					<tr>
+						<td rowspan="2" class="MenuSession" style="width: 150px;" width="150">
+							<label style="font-size: 11px; margin-bottom: 2px;">
+								Session auswählen</label><br />
+							<select id="selSession" style="width: 135px; font-size: 10px;" onchange="sessionChanged();">
+							</select>
+						</td>
+						<td id="cellKlassement" class="MenuTop" width="33%">
+							<a href="javascript:changeRankingView(2);">Live-Klassement</a>
+						</td>
+						<td id="cellStrecke" class="MenuTop" width="33%">
+							<a href="javascript:window.location = 'http://sport.rtl.de/formel1/ticker/i1_' + tickerId + '.html?' + (new Date().getTime());">
+								Streckeninfos</a>
+						</td>
+						<td rowspan="2" class="MenuImage" valign="middle" align="center">
+							<a href="javascript:refreshTicker();">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/aktualisieren.gif" alt="Ticker aktualisieren" /></a>
+						</td>
+						<td class="MenuTopL" width="33%">
+							<a href="http://sport.rtl.de/formel1/datenbank/saison_einzeln.php?sa_nr=2007">Ergebnis-Datenbank</a>
+						</td>
+					</tr>
+					<tr>
+						<td id="cellWMStand" class="MenuBottom">
+							<a href="javascript:changeRankingView(4);">WM-Stand</a>
+						</td>
+						<td id="cellStartaufstellung" class="MenuBottom">
+							<a href="javascript:changeRankingView(3);">Startaufstellung</a>
+						</td>
+						<td class="MenuBottomL">
+							<a href="http://sport.rtl.de/formel-1/formel1_news.php">Formel-1-News</a>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
 		<tr>
 			<td colspan="2">
 				<iframe id="ifrHeader" security="restricted" style="border: 0px solid black; height: 55px;
-					width: 921px;" frameborder="0"></iframe>
+					width: 922px; margin-bottom: 12px;" frameborder="0"></iframe>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<iframe id="ifrRanking" security="restricted" style="border: 0px solid black; height: 335px;
-					width: 467px;" frameborder="0"></iframe>
+				<iframe id="ifrRanking" style="border: 0px solid black; height: 281px; width: 457px;
+					margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;" frameborder="0"></iframe>
 			</td>
 			<td>
-				<iframe id="ifrNews" security="restricted" style="border: 0px solid black; height: 335px;
-					width: 447px;" frameborder="0"></iframe>
+				<iframe id="ifrNews" security="restricted" style="border: 0px solid black; height: 281px;
+					width: 463px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;" frameborder="0">
+				</iframe>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="background-color: #d4d0c7; height: 115px;">
+				<table width="100%">
+					<tr>
+						<td align="center" valign="middle">
+							<a href="http://sport.rtl.de/formel1/streckenani/main.html">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_streckeninfo.gif" alt="Strecken Inforcenter" /></a>
+						</td>
+						<td align="center" valign="middle">
+							<a href="http://sport.rtl.de/games/webracer/index.php">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_webracer.gif" alt="Webracer" /></a>
+						</td>
+						<td align="center" valign="middle">
+							<a href="http://www.rtl.de/chat/openchat.php?CHANNEL=F1Chat&EVENT=100&COL=9A0202&COLT=FFFFFF&COLB=9A0202&IVWX=http://rtl.ivwbox.de/cgi-bin/ivw/CP/kco_chat;/world/sportde/formel1/ticker/chat">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_chat.gif" alt="F1-Chat" /></a>
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>
@@ -101,6 +287,24 @@
 		updateAll();
 		intervalRefresh = window.setInterval("updateTimer()", 5000);
 		intervalSingleRefresh = window.setInterval("singleRefreshTimer()", 1000);
+		
+		var selThis = document.getElementById("selSession");
+		var selOther = System.Gadget.document.getElementById("selSession");
+		
+		for(var i = 0; i < selOther.options.length; i++)
+		{
+			var optTemp = document.createElement("option");
+			var optTempTxt = document.createTextNode(selOther.options[i].innerHTML);
+			
+			optTemp.setAttribute("value", selOther.options[i].getAttribute("value"));
+			optTemp.setAttribute("selected", selOther.options[i].getAttribute("selected"));
+			optTemp.appendChild(optTempTxt);
+			
+			selThis.appendChild(optTemp);
+		}
+		
+		//System.Gadget.Settings.write("tickerId", 537);
+		//
 	</script>
 
 </body>

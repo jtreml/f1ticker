@@ -61,6 +61,7 @@
     <Content Include="Code\flyout.html" />
     <Content Include="Code\gadget.xml" />
     <Content Include="Code\gfx\banner.jpg" />
+    <Content Include="Code\gfx\banner_big.jpg" />
     <Content Include="Code\gfx\banner_ex.jpg" />
     <Content Include="Code\gfx\close_ticker.png" />
     <Content Include="Code\gfx\current_session.png" />
@@ -71,6 +72,7 @@
     <Content Include="Code\gfx\refreshing.png" />
     <Content Include="Code\gfx\refresh_off.png" />
     <Content Include="Code\gfx\refresh_on.png" />
+    <Content Include="Code\gfx\refresh_original.gif" />
     <Content Include="Code\icon.png" />
     <Content Include="Code\index.html" />
     <Content Include="Code\logo.png" />
