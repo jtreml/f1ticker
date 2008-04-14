@@ -17,6 +17,18 @@
 		var autoRefresh = System.Gadget.Settings.readString("autoRefresh");
 		var singleRefresh = System.Gadget.Settings.readString("singleRefresh");
 		
+		System.Gadget.Flyout.onShow = showFlyout;
+		
+		function showFlyout()
+		{
+			if (System.Gadget.docked) {
+				document.getElementById("body").style.border = "1px solid Gray";
+			}
+			else {
+				document.getElementById("body").style.border = "2px solid Gray";
+			}
+		}
+		
 		function updateHeader()
 		{
 			document.getElementById("ifrHeader").src = "http://sport.rtl.de/formel1/ticker/hl1_" + tickerId + ".html?" + (new Date().getTime());
@@ -65,7 +77,7 @@
 	</script>
 
 </head>
-<body>
+<body style="border: 2px solid Gray;" id="body">
 	<table>
 		<tr>
 			<td colspan="2">
