@@ -62,6 +62,7 @@
     <Content Include="Code\gadget.xml" />
     <Content Include="Code\gfx\banner.jpg" />
     <Content Include="Code\gfx\banner_ex.jpg" />
+    <Content Include="Code\gfx\close_ticker.png" />
     <Content Include="Code\gfx\current_session.png" />
     <Content Include="Code\gfx\error.png" />
     <Content Include="Code\gfx\live_stream.png" />
