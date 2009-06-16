@@ -5,7 +5,7 @@
 		{
 			margin: 0;
 			width: 200px;
-			height: 300px;
+			height: 330px;
 			font-weight: bold;
 			font-size: 12px;
 		}
@@ -26,6 +26,16 @@
 			document.getElementById("WidthUndocked").value = System.Gadget.Settings.readString("WidthUndocked");
 			document.getElementById("TextUndocked").value = System.Gadget.Settings.readString("TextUndocked");
 			document.getElementById("TextDocked").value = System.Gadget.Settings.readString("TextDocked");
+			
+			if(System.Gadget.Settings.readString("TeamsDocked") == "True")
+			    document.getElementById("TeamsDocked").checked = true;
+			else
+			    document.getElementById("TeamsDocked").checked = false;
+			    
+			if(System.Gadget.Settings.readString("TeamsUndocked") == "True")
+			    document.getElementById("TeamsUndocked").checked = true;
+			else
+			    document.getElementById("TeamsUndocked").checked = false;
 		}
 		
 		function SettingsClosing(event)
@@ -39,27 +49,30 @@
 				var heightDocked = document.getElementById("HeightDocked").value;
 				
 				if(!IsNumeric(heightDocked) || heightDocked < 100 || heightDocked > 600)
-					txtError += "Docked height must be between 100 and 600!<br />";
+					txtError += "Höhe (Normal) muss zwischen 100 und 600 sein!<br />";
 				
 				var widthDocked = document.getElementById("WidthDocked").value;
 				if(!IsNumeric(widthDocked) || widthDocked < 130 || widthDocked > 300)
-					txtError += "Docked width must be between 130 and 300!<br />";
+					txtError += "Breite (Normal) muss zwischen 130 und 300 sein!<br />";
 				
 				var heightUndocked = document.getElementById("HeightUndocked").value;
 				if(!IsNumeric(heightUndocked) || heightUndocked < 100 || heightUndocked > 1000)
-					txtError += "Undocked height must be between 100 and 1000!<br />";
+					txtError += "Höhe (Großansicht) muss zwischen 100 und 1000 sein!<br />";
 
 				var widthUndocked = document.getElementById("WidthUndocked").value;
 				if(!IsNumeric(widthUndocked) || widthUndocked < 130 || widthUndocked > 1000)
-					txtError += "Undocked width must be between 130 and 1000!<br />";
+					txtError += "Breite (Großansicht) muss zwischen 130 und 1000 sein!<br />";
 					
 				var textUndocked = document.getElementById("TextUndocked").value;
 				if(!IsNumeric(textUndocked) || textUndocked < 6 || textUndocked > 20)
-					txtError += "Undocked text must be between 6 and 20!<br />";
+					txtError += "Schrift (Großansicht) must be between 6 and 20!<br />";
 					
 				var textDocked = document.getElementById("TextDocked").value;
 				if(!IsNumeric(textDocked) || textDocked < 6 || textDocked > 14)
-					txtError += "Docked text must be between 6 and 14!<br />";
+					txtError += "Schrift (Normal) muss zwischen 6 und 14 sein!<br />";
+					
+			    var teamsDocked = document.getElementById("TeamsDocked").checked;
+			    var teamsUndocked = document.getElementById("TeamsUndocked").checked;
 					
 				if(txtError == "") {
 					System.Gadget.Settings.write("HeightDocked", heightDocked);
@@ -68,6 +81,16 @@
 					System.Gadget.Settings.write("WidthUndocked", widthUndocked);
 					System.Gadget.Settings.write("TextDocked", textDocked);
 					System.Gadget.Settings.write("TextUndocked", textUndocked);
+					
+					if(teamsDocked)
+					    System.Gadget.Settings.write("TeamsDocked", "True");
+					else
+					    System.Gadget.Settings.write("TeamsDocked", "False");
+					    
+					if(teamsUndocked)
+					    System.Gadget.Settings.write("TeamsUndocked", "True");
+					else
+					    System.Gadget.Settings.write("TeamsUndocked", "False");
 				}
 				else {
 					document.getElementById("error").innerHTML = txtError;
@@ -100,14 +123,14 @@
 </head>
 <body oninit="">
 	<div style="text-decoration: underline; margin-bottom: 8px;">
-		Size (Docked)
+		Größe (Normal)
 	</div>
 	<div>
 		<table width="100%">
 			<tr>
 				<td>
 					<label>
-						Height:
+						Höhe:
 					</label>
 				</td>
 				<td>
@@ -118,7 +141,7 @@
 			<tr>
 				<td>
 					<label>
-						Width:
+						Breite:
 					</label>
 				</td>
 				<td>
@@ -129,7 +152,7 @@
 			<tr>
 				<td>
 					<label>
-						Text Size:
+						Schrift:
 					</label>
 				</td>
 				<td>
@@ -137,17 +160,27 @@
 					px
 				</td>
 			</tr>
+			<tr>
+				<td>
+					<label>
+						Team:
+					</label>
+				</td>
+				<td>
+					<input type="checkbox" id="TeamsDocked" />
+				</td>
+			</tr>
 		</table>
 	</div>
 	<div style="text-decoration: underline; margin-bottom: 10px; margin-top: 15px;">
-		Size (Undocked)
+		Größe (Großansicht)
 	</div>
 	<div>
 		<table width="100%">
 			<tr>
 				<td>
 					<label>
-						Height:
+						Höhe:
 					</label>
 				</td>
 				<td>
@@ -158,7 +191,7 @@
 			<tr>
 				<td>
 					<label>
-						Width:
+						Breite:
 					</label>
 				</td>
 				<td>
@@ -169,12 +202,22 @@
 			<tr>
 				<td>
 					<label>
-						Text Size:
+						Schrift:
 					</label>
 				</td>
 				<td>
 					<input style="width: 80px;" id="TextUndocked" />
 					px
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label>
+						Team:
+					</label>
+				</td>
+				<td>
+					<input type="checkbox" id="TeamsUndocked" />
 				</td>
 			</tr>
 		</table>

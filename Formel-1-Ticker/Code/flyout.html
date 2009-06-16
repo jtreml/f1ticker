@@ -1,12 +1,15 @@
 <html>
 <head>
+    
+    <link rel="stylesheet" type="text/css" href="http://sport.rtl.de/formel1/ticker/f1ticker.css">
+	
 	<style type="text/css">
 		body
 		{
 			margin: 0px 0px 0px 0px;
 			padding: 0px 0px 0px 0px;
-			width: 922px;
-			height: 651;
+			width: 921px;
+			height: 630px;
 			font-family: verdana;
 			font-weight: bold;
 			font-size: 10px;
@@ -92,6 +95,8 @@
 		
 		var rankingView = 2;
 		
+		//var tickerId = 651;
+		
 		System.Gadget.Flyout.onShow = showFlyout;
 		
 		function showFlyout()
@@ -106,7 +111,7 @@
 		
 		function updateHeader()
 		{
-			document.getElementById("ifrHeader").src = "http://sport.rtl.de/formel1/ticker/hl1_" + tickerId + ".html?" + (new Date().getTime());
+		    getHeader("http://sport.rtl.de/formel1/ticker/hl1_" + tickerId + ".html?" + (new Date().getTime()));
 		}
 		
 		function updateRanking()
@@ -114,9 +119,9 @@
 			var colorNormal = "#d4d0c7";
 			var colorSel = "#fe3233";
 			
-			document.getElementById("cellKlassement").style.backgroundColor = (rankingView == 2 ? colorSel : colorNormal);
-			document.getElementById("cellWMStand").style.backgroundColor = (rankingView == 4 ? colorSel : colorNormal);
-			document.getElementById("cellStartaufstellung").style.backgroundColor = (rankingView == 3 ? colorSel : colorNormal);
+			document.getElementById("cellKlassement").className = (rankingView == 2 ? "bgColorSport1 navigationTextOn navigationColumn navigationColumnSize2" : "bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2");
+			document.getElementById("cellWMStand").className = (rankingView == 4 ? "bgColorSport1 navigationTextOn navigationColumn navigationColumnSize2" : "bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2");
+			document.getElementById("cellStartaufstellung").className = (rankingView == 3 ? "bgColorSport1 navigationTextOn navigationColumn navigationColumnSize2" : "bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2");
 
 			document.getElementById("ifrRanking").src = "http://sport.rtl.de/formel1/ticker/i" + rankingView + "_" + tickerId + ".html?" + (new Date().getTime());
 		}
@@ -191,92 +196,131 @@
 			rankingView = view;			
 			updateRanking();
 		}
-				
+		
+        function getHeader(url) {
+    		req = new ActiveXObject("MSXML2.XMLHTTP");
+			
+			if (req != undefined) {
+				req.onreadystatechange = function() {getHeaderResponse(url);};
+				req.open("GET", url, true);
+				req.send("");
+			}
+		}  
+
+		function getHeaderResponse(url) {
+			if (req.readyState == 4) {
+				if (req.status == 200) {
+					
+					var body = BinaryToString(req.responseBody);
+					
+					body = body.replace(/if \(location\.search\.length==14\) \{/gi, "if (location.search.length==14) { return;");
+					body = body.replace(/onload="JavaScript:load_\(\);return false;"/gi, "");
+					body = body.replace(/onclick="javascript:parent.frNavi.nachladen\(\);"/gi, "onclick=\"javascript:parent.refreshTicker();\"");
+					body = body.replace(/img_new\/btnAktualisieren_sport\.gif/gi, "http://sport.rtl.de/formel1/ticker/img_new/btnAktualisieren_sport.gif");
+					
+					//alert(body);
+					
+					var doc = top.frames.ifrHeader.document;
+					doc.write(body);
+					
+					doc.close();
+				}
+			}
+		}
+	    
+	    function test()
+	    {
+	        alert("hi");
+	    }	
 	</script>
 
+	<script type="text/vbscript" language="VBScript">
+		' Solution found on http://www.codingforums.com/archive/index.php?t-47018.html
+		
+		Function BinaryToString(Binary)
+			Dim I,S
+			For I = 1 to LenB(Binary)
+				S = S & Chr(AscB(MidB(Binary,I,1)))
+			Next
+			BinaryToString = S
+		End Function
+	</script>
 </head>
 <body style="border: 2px solid Gray;" id="body">
 	<!-- This empty link exists to prevent the following select box getting the focus and having a selection border -->
 	<a href=""></a>
+	
+	<table class="tableNavigation" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td class="column1">
+				<img src="http://sport.rtl.de/formel1/ticker/img_new/header_f1_ticker_sport.jpg" width="575" height="89"/>
+			</td>
+			<td class="column2">
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td class="bgColorSport2 navigationTextOff navigationColumn navigationColumnSize1">
+
+							<FORM NAME="fmSelTick">
+							Session ausw&auml;hlen:&nbsp;&nbsp;
+							<SELECT id="selSession" class="selectSession" NAME="TickID" SIZE="1" onchange="sessionChanged();">
+							</SELECT>
+							</FORM>
+																		
+						</td>
+					</tr>
+
+				</table>
+					
+				<TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" >
+					<TR>
+						<TD class="bgColorSport1 navigationTextOn navigationColumn navigationColumnSize2" ID="cellKlassement"><A ID="Link_2_Link" href="javascript:changeRankingView(2);">Live-Ergebnisse</A></TD>
+						<TD class="bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2" ID="cellStartaufstellung"><A ID="Link_3_Link" href="javascript:changeRankingView(3);">Startaufstellung</A></TD>
+					</TR>
+					<TR>
+					    <TD class="bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2" ID="Link_1"><A ID="Link_1_Link" href="javascript:window.location = 'http://sport.rtl.de/formel1/ticker/i1_' + tickerId + '.html?' + (new Date().getTime());">Streckeninfos</A></TD>
+
+						<TD class="bgColorNavigation navigationTextOff navigationColumn navigationColumnSize2" ID="cellWMStand"><A ID="Link_4_Link" href="javascript:changeRankingView(4);">WM-Stand</A></TD>
+					</TR>
+				</TABLE>
+							        		
+			</td>		
+		</table>
+
+
 	<table width="100%" cellspacing="0">
 		<tr>
 			<td colspan="2">
-				<img src="http://sport.rtl.de/formel1/ticker/img_new/header_xxl.jpg" alt="Banner"
-					style="margin-top: 14px;" />
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<table width="100%" cellspacing="0" class="Menu">
-					<tr>
-						<td rowspan="2" class="MenuSession" style="width: 150px;" width="150">
-							<label style="font-size: 11px; margin-bottom: 2px;">
-								Session auswählen</label><br />
-							<select id="selSession" style="width: 135px; font-size: 10px;" onchange="sessionChanged();">
-							</select>
-						</td>
-						<td id="cellKlassement" class="MenuTop" width="33%">
-							<a href="javascript:changeRankingView(2);">Live-Klassement</a>
-						</td>
-						<td id="cellStrecke" class="MenuTop" width="33%">
-							<a href="javascript:window.location = 'http://sport.rtl.de/formel1/ticker/i1_' + tickerId + '.html?' + (new Date().getTime());">
-								Streckeninfos</a>
-						</td>
-						<td rowspan="2" class="MenuImage" valign="middle" align="center">
-							<a href="javascript:refreshTicker();">
-								<img src="http://sport.rtl.de/formel1/ticker/img_new/aktualisieren.gif" alt="Ticker aktualisieren" /></a>
-						</td>
-						<td class="MenuTopL" width="33%">
-							<a href="http://sport.rtl.de/formel1/datenbank/saison_einzeln.php?sa_nr=2007">Ergebnis-Datenbank</a>
-						</td>
-					</tr>
-					<tr>
-						<td id="cellWMStand" class="MenuBottom">
-							<a href="javascript:changeRankingView(4);">WM-Stand</a>
-						</td>
-						<td id="cellStartaufstellung" class="MenuBottom">
-							<a href="javascript:changeRankingView(3);">Startaufstellung</a>
-						</td>
-						<td class="MenuBottomL">
-							<a href="http://sport.rtl.de/formel-1/formel1_news.php">Formel-1-News</a>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td colspan="2">
-				<iframe id="ifrHeader" security="restricted" style="border: 0px solid black; height: 55px;
-					width: 922px; margin-bottom: 12px;" frameborder="0"></iframe>
+				<iframe id="ifrHeader" style="border: 0px solid black; height: 55px;
+					width: 922px; margin-bottom: 7px;" frameborder="0"></iframe>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<iframe id="ifrRanking" style="border: 0px solid black; height: 281px; width: 457px;
+				<iframe id="ifrRanking" style="border: 0px solid black; height: 370px; width: 452px;
 					margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;" frameborder="0"></iframe>
 			</td>
 			<td>
-				<iframe id="ifrNews" security="restricted" style="border: 0px solid black; height: 281px;
-					width: 463px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;" frameborder="0">
+				<iframe id="ifrNews" security="restricted" style="border: 0px solid black; height: 370px;
+					width: 483px; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px;" frameborder="0">
 				</iframe>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2" style="background-color: #d4d0c7; height: 115px;">
-				<table width="100%">
-					<tr>
-						<td align="center" valign="middle">
-							<a href="http://sport.rtl.de/formel1/streckenani/main.html">
-								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_streckeninfo.gif" alt="Strecken Inforcenter" /></a>
+			<td colspan="2" style="height: 115px;">
+				<table width="98%" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+					<tr style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+						<td align="center" valign="middle" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+							<a href="http://sport.rtl.de/formel1/streckenani/main.html" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/btn_streckeninfocenter.gif" alt="Strecken Inforcenter" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"/></a>
 						</td>
-						<td align="center" valign="middle">
-							<a href="http://sport.rtl.de/games/webracer/index.php">
-								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_webracer.gif" alt="Webracer" /></a>
+						<td align="center" valign="middle" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+							<a href="http://sport.rtl.de/games/webracer/index.php" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/btn_webracer.gif" alt="Webracer" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"/></a>
 						</td>
-						<td align="center" valign="middle">
-							<a href="http://www.rtl.de/chat/openchat.php?CHANNEL=F1Chat&EVENT=100&COL=9A0202&COLT=FFFFFF&COLB=9A0202&IVWX=http://rtl.ivwbox.de/cgi-bin/ivw/CP/kco_chat;/world/sportde/formel1/ticker/chat">
-								<img src="http://sport.rtl.de/formel1/ticker/img_new/button_chat.gif" alt="F1-Chat" /></a>
-						</td>
+						<td align="center" valign="middle" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+							<a href="http://www.rtl.de/sport/formel-1/livestream/" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;">
+								<img src="http://sport.rtl.de/formel1/ticker/img_new/btn_livestream.gif" alt="F1-Chat" style="padding: 0px 0px 0px 0px; margin: 0px 0px 0px 0px;"/></a>
+						</td>						
 					</tr>
 				</table>
 			</td>
