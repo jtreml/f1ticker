@@ -1,3 +1,5 @@
+**This project was originally hosted at [CodePlex](https://f1ticker.codeplex.com/).**
+
 # Formula 1 Live Text Ticker
 ## Windows Vista Sidebar Gadget
 
